@@ -5,7 +5,7 @@ import MealItem from "./MealItem/MealItem";
 
 const AvailableMeals = () => {
 	const mealsList = meals.map((meal) => (
-		<MealItem key={meal.id} name={meal.name} description={meal.description} price={meal.price}>
+		<MealItem key={meal.id} name={meal.name} description={meal.description} price={meal.price} id={meal.id}>
 			{meal.name}
 		</MealItem>
 	));

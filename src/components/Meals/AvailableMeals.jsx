@@ -6,6 +6,8 @@ import { useEffect, useState } from "react";
 
 const AvailableMeals = () => {
 	const [meals, setMeals] = useState([]);
+	const [isLoading, setIsLoading] = useState(true);
+	const [httpError, setHttpError] = useState(null);
 
 	useEffect(() => {
 		const fetchMeals = async () => {
@@ -21,12 +23,31 @@ const AvailableMeals = () => {
 					price: response.data[key].price,
 				});
 			}
-
 			setMeals(loadedMeals);
+			setIsLoading(false);
 		};
 
-		fetchMeals();
+		fetchMeals().catch((error) => {
+			setIsLoading(false);
+			setHttpError(error.message);
+		});
 	}, []);
+
+	if (isLoading) {
+		return (
+			<section className={classes["meals-loading"]}>
+				<p>Loading meals...</p>
+			</section>
+		);
+	}
+
+	if (httpError) {
+		return (
+			<section className={classes["meals-error"]}>
+				<p>Failed to fetch...</p>
+			</section>
+		);
+	}
 
 	const mealsList = meals.map((meal) => (
 		<MealItem key={meal.id} name={meal.name} description={meal.description} price={meal.price} id={meal.id}>

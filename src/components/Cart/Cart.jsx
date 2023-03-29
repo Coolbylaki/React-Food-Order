@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-
+import mealsApi from "../../API/firebase-meals";
 import classes from "./Cart.module.css";
 import Modal from "./Modal";
 import CartContext from "../../store/cart-context";
@@ -21,6 +21,17 @@ const Cart = (props) => {
 	const cartItemAddHandler = (item) => {
 		const cartItem = { ...item, amount: 1 };
 		cartCtx.addItem(cartItem);
+	};
+
+	const submitOrderHandler = (userData) => {
+		mealsApi.post(
+			"/orders.json",
+			JSON.stringify({
+				user: userData,
+				orderItems: cartCtx.items,
+			})
+		);
+		console.log("Order sent!");
 	};
 
 	const cartItems = (
@@ -62,7 +73,7 @@ const Cart = (props) => {
 				<span>Total Amount</span>
 				<span>{totalAmount}</span>
 			</div>
-			{isCheckout && <Checkout onCancel={props.onClose} />}
+			{isCheckout && <Checkout onCancel={props.onClose} onSubmit={submitOrderHandler} />}
 			{!isCheckout && modalActions}
 		</Modal>
 	);
